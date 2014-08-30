@@ -1,0 +1,39 @@
+#!/usr/bin/env ruby
+
+require "bundler/setup"
+require_relative "../lib/rows2cols"
+
+def run(options)
+  rows2cols = Rows2Cols.new(
+    io: ARGF,
+    columns: options[:columns],
+    separator: options[:separator]
+  )
+
+  rows2cols.each_row do |line|
+    puts line
+  end
+end
+
+require "optparse"
+
+options = { columns: 4, separator: " " }
+
+OptionParser.new do |opts|
+ opts.banner = "Usage: rows2cols [options] [file, file...]"
+
+ opts.on("-c", "--columns N", Integer, "Number of columns (default 4)") do |columns|
+   options[:columns] = columns
+ end
+
+ opts.on("-s", "--separator CHAR", "Separator character between columns (default space)") do |separator|
+   options[:separator] = separator
+ end
+
+ opts.on("-h", "--help", "Display this help") do
+   puts opts
+   exit
+ end
+end.parse!
+
+run(options)
